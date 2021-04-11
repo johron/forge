@@ -12,34 +12,19 @@ jobs:
         include:
           - os: windows-latest
             triplet: x64-windows
-            vcpkgCommitId: '30124253eecff36bc90f73341edbfb4f845e2a1e'
           - os: ubuntu-latest
             triplet: x64-linux
-            vcpkgCommitId: '30124253eecff36bc90f73341edbfb4f845e2a1e'
           - os: macos-latest
             triplet: x64-osx
-            vcpkgCommitId: '30124253eecff36bc90f73341edbfb4f845e2a1e'
     steps:
-      - name: checkout project
-        uses: actions/checkout@v2
-
       - name: install cmake
         uses: lukka/get-cmake@latest
 
-      - name: setup vcpkg
-        uses: lukka/run-vcpkg@v6
-        with:
-          setupOnly: true
-          vcpkgDirectory: '${{ github.workspace }}/external/vcpkg'
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg_manifest/vcpkg.json' ) }}
-          vcpkgTriplet: ${{ matrix.triplet }}
-          additionalCachedPaths: ${{ env.buildDir }}/vcpkg_installed
+      - name: checkout project
+        uses: actions/checkout@v2
 
-      - name: install vcpkg packages
-        uses: lukka/run-cmake@v3
-        with:
-          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-          cmakeListsTxtPath: '${{ github.workspace }}/vcpkg_manifest/CMakeLists.txt'
-          buildDirectory: ${{ env.buildDir }}
-          useVcpkgToolchainFile: true
-          buildWithCMake: true
+      - name: generate prooject
+        run: cmake . -B.build_release -DCMAKE_BUILD_TYPE=Release
+
+      - name: build project
+        run: cmake --build .build_release --config Release
