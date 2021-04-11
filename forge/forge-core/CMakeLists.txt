@@ -20,7 +20,14 @@ source_group("include" FILES ${src_include})
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 
-target_link_libraries(${target_name} PUBLIC "sfml-system" "sfml-network" "sfml-graphics" "sfml-window" "sfml-main")
+target_link_libraries(${target_name} PUBLIC "sfml-system")
+target_link_libraries(${target_name} PUBLIC "sfml-network")
+target_link_libraries(${target_name} PUBLIC "sfml-graphics")
+target_link_libraries(${target_name} PUBLIC "sfml-window")
+if (WIN32) 
+	target_link_libraries(${target_name} PUBLIC "sfml-main")
+endif()
+
 target_link_libraries(${target_name} PUBLIC "compiler_warnings")
 target_link_libraries(${target_name} PUBLIC "compiler_features")
 target_link_libraries(${target_name} PUBLIC "sanitizers")
