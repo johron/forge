@@ -1,12 +1,15 @@
-name: lint
+name: clang-tidy
 
 on: [pull_request]
+
 jobs:
-  clang-tidy:
-    name: clang-tidy
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: clang-tidy check
-        uses: smay1613/clang-tidy-action@master
-    env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v2
+
+    - uses: ZedThree/clang-tidy-review@v0.6.0
+      id: review
+
+    - if: steps.review.outputs.total_comments > 0
+      run: exit 1
