@@ -1,19 +1,12 @@
-name: clang-tidy-review
+name: c-linter
 
-# You can be more specific, but it currently only works on pull requests
 on: [pull_request]
-
 jobs:
-  build:
+  c-linter:
+    name: c-linter
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    # Optionally generate compile_commands.json
-
-    - uses: ZedThree/clang-tidy-review@v0.6.0
-      id: review
-    # If there are any comments, fail the check
-    - if: steps.review.outputs.total_comments > 0
-      run: exit 1
+      - name: c-linter
+        uses: ArtificialAmateur/clang-tidy-action@master
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
