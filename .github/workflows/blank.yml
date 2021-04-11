@@ -3,7 +3,7 @@ on: push
 
 jobs:
   job:
-    name: ${{ matrix.os }}-hosted-basic
+    name: build-project on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy: 
       fail-fast: false
@@ -25,3 +25,21 @@ jobs:
 
       - name: install cmake
         uses: lukka/get-cmake@latest
+
+      - name: setup vcpkg
+        uses: lukka/run-vcpkg@v6
+        with:
+          setupOnly: true
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          appendedCacheKey: ${{ hashFiles( '**/vcpkg_manifest/vcpkg.json' ) }}
+          vcpkgTriplet: ${{ matrix.triplet }}
+          additionalCachedPaths: ${{ env.buildDir }}/vcpkg_installed
+
+      - name: install vcpkg packages
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/vcpkg_manifest/CMakeLists.txt'
+          buildDirectory: ${{ env.buildDir }}
+          useVcpkgToolchainFile: true
+          buildWithCMake: true
