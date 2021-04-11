@@ -22,6 +22,8 @@ jobs:
 
       - name: checkout project
         uses: actions/checkout@v2
+        with: 
+          submodules: 'recursive'
 
       - name: generate prooject
         run: cmake . -B.build_release -DCMAKE_BUILD_TYPE=Release
