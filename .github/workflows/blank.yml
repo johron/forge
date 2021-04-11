@@ -19,33 +19,15 @@ jobs:
           - os: macos-latest
             triplet: x64-osx
     steps:
-      - name: install cmake
-        uses: lukka/get-cmake@latest
-
-      - name: setup vcpkg
-        uses: lukka/run-vcpkg@v6
-        with:
-          setupOnly: true
-          vcpkgDirectory: '${{ github.workspace }}/external/vcpkg'
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg_manifest/vcpkg.json' ) }}
-          vcpkgTriplet: ${{ matrix.triplet }}
-          additionalCachedPaths: ${{ env.buildDir }}/vcpkg_installed
-
-      - name: run vcpkg
-        uses: lukka/run-cmake@v3
-        with:
-          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-          cmakeListsTxtPath: '${{ github.workspace }}/vcpkg_manifest/CMakeLists.txt'
-          buildDirectory: ${{ env.buildDir }}
-          useVcpkgToolchainFile: true
-          buildWithCMake: true
-
       - name: checkout project
         uses: actions/checkout@v2
         with: 
-          submodules: 'recursive'
+          submodules: true
 
-      - name: generate prooject
+      - name: install cmake
+        uses: lukka/get-cmake@latest
+
+      - name: generate project
         run: cmake . -B.build_release -DCMAKE_BUILD_TYPE=Release
 
       - name: build project
