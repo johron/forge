@@ -1,12 +1,13 @@
-name: static analysis
-
+name: flawfinder
 on: [pull_request]
 
 jobs:
-  graph:
+  build:
+    name: flawfinder-action
     runs-on: ubuntu-latest
     steps:
-    - name: Run static analysis
-      uses: JacobDomagala/StaticAnalysis@master
-      with:
-        exclude_dir: dependencies
+      - uses: actions/checkout@v2
+      - name: flawfinder-action 
+        uses: deep5050/flawfinder-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN}}
