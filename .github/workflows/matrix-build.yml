@@ -25,18 +25,17 @@ jobs:
         with: 
           submodules: true
 
-      - name: Set vcpkg's response file path used as part of cache's key.
+      - name: configure vcpkg response file
         uses: lukka/set-shell-env@master
         with:
           VCPKGRESPONSEFILE: ${{ github.workspace }}/scripts/vcpkg/vcpkg_${{ matrix.triplet }}.txt
 
-      - name: Restore artifacts, or run vcpkg, build and cache artifacts
+      - name: run vcpkg and update cache
         uses: lukka/run-vcpkg@main
         id: runvcpkg
         with:
           vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
           vcpkgDirectory: '${{ github.workspace }}/external/vcpkg'
-          # Ensure the cache key changes any time the content of the response file changes.
           appendedCacheKey: ${{ hashFiles( env.VCPKGRESPONSEFILE ) }}
 
       - name: generate project
@@ -44,6 +43,13 @@ jobs:
       
       - name: build project
         run: cmake --build ${{ env.build_dir }} --config Release
+
+      - name: run unittests
+        run: |
+          cd ${{ env.build_dir }}
+          ctest .
+          cd ..
+          
 
 
 
