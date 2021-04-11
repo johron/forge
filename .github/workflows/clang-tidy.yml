@@ -1,12 +1,12 @@
-name: Static analysis
+name: lint
 
 on: [pull_request]
-
 jobs:
-  graph:
+  clang-tidy:
+    name: clang-tidy
     runs-on: ubuntu-latest
     steps:
-    - name: Run static analysis
-      uses: JacobDomagala/StaticAnalysis@master
-      with:
-        exclude_dir: dependencies
+      - name: clang-tidy check
+        uses: smay1613/clang-tidy-action@master
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
