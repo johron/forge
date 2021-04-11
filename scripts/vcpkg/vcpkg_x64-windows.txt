@@ -1,3 +1,4 @@
 --triplet
 x64-windows
-sqlite3
+gtest
+sfml
