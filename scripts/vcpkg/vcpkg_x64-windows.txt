@@ -1,0 +1,4 @@
+--triplet
+x64-windows
+gtest
+sfml

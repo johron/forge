@@ -1,0 +1,57 @@
+name: matrix-build
+on: push
+
+jobs:
+  job:
+    name: build-project on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      build_dir: '${{ github.workspace }}/build/'
+    strategy: 
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+          - os: macos-latest
+            triplet: x64-osx
+    steps:
+      - name: install cmake
+        uses: lukka/get-cmake@latest
+
+      - name: checkout project
+        uses: actions/checkout@v2
+        with: 
+          submodules: true
+
+      - name: configure vcpkg response file
+        uses: lukka/set-shell-env@master
+        with:
+          VCPKGRESPONSEFILE: ${{ github.workspace }}/scripts/vcpkg/vcpkg_${{ matrix.triplet }}.txt
+
+      - name: run vcpkg and update cache
+        uses: lukka/run-vcpkg@main
+        id: runvcpkg
+        with:
+          vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
+          vcpkgDirectory: '${{ github.workspace }}/external/vcpkg'
+          appendedCacheKey: ${{ hashFiles( env.VCPKGRESPONSEFILE ) }}
+
+      - name: generate project
+        run: cmake . -B${{ env.build_dir }} -DCMAKE_BUILD_TYPE=Release
+      
+      - name: build project
+        run: cmake --build ${{ env.build_dir }} --config Release
+
+      - name: run unittests
+        run: |
+          cd ${{ env.build_dir }}
+          ctest .
+          cd ..
+          
+
+
+
+
+          
