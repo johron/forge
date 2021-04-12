@@ -1,4 +1,6 @@
 --triplet
 x64-osx
 gtest
+imgui
 sfml
+imgui-sfml

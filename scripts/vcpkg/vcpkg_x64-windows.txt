@@ -1,4 +1,7 @@
 --triplet
 x64-windows
 gtest
+imgui
 sfml
+imgui-sfml
+
