@@ -3,7 +3,9 @@
 #include "imgui.h"
 
 int main(int argc, char** argv) {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 0;
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
